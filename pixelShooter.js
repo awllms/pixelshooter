@@ -9,9 +9,16 @@ export class PixelShooter extends Scene {
         // constructor(): Scenes begin by populating initial values like the Shapes and Materials they'll need.
         super();
         this.player_position = vec3(-18, -4.5, 0); // Initial position
+        this.player_position2 = vec3(18, -4.5, 0); // Initial position
+
         this.player_velocity = vec3(0, 0, 0); // Velocity
+        this.player_velocity2 = vec3(0, 0, 0); // Velocity
+
         this.on_ground = true;
+        this.on_ground2 = true;
+
         this.projectiles = []; // Array to hold active projectiles
+        this.projectiles2 = []; // Array to hold active projectiles
 
         // At the beginning of our program, load one of each of these shape definitions onto the GPU.
         this.shapes = {
@@ -27,6 +34,7 @@ export class PixelShooter extends Scene {
 
             // Pixel Shooter
             player: new defs.Square(),
+            player2: new defs.Square(),
             platform: new defs.Square(),
             projectile: new defs.Square(),
         };
@@ -58,6 +66,8 @@ export class PixelShooter extends Scene {
             // Pixel Shooter
             player_material: new Material(new defs.Phong_Shader(),
                 { color: hex_color("#FE5F55") }),
+            player_material2: new Material(new defs.Phong_Shader(),
+                { color: hex_color("#ABCDEF") }),
             platform_material: new Material(new defs.Phong_Shader(),
                 { color: hex_color("#034F20") }),
             projectile_material: new Material(new defs.Phong_Shader(),
@@ -73,19 +83,52 @@ export class PixelShooter extends Scene {
 
     make_control_panel() {
         // Draw the scene's buttons, setup their actions and keyboard shortcuts, and monitor live measurements.
+        //Player 1 Controls
         this.key_triggered_button("Move Left", ["ArrowLeft"], () => {
+            this.player_velocity2[0] = -5; // Move left
+        }, undefined, () => {
+            this.player_velocity2[0] = 0; // Stop moving when key is released
+        });
+        this.new_line();
+        this.key_triggered_button("Move Right", ["ArrowRight"], () => {
+            this.player_velocity2[0] = 5; // Move right
+        }, undefined, () => {
+            this.player_velocity2[0] = 0; // Stop moving when key is released
+        });
+        this.new_line();
+        this.key_triggered_button("Jump", ["ArrowUp"], () => {
+            if (this.on_ground2) { // Only jump if on the ground
+                this.on_ground2 = false;
+                this.player_velocity2[1] = 10; // Jump velocity
+            }
+        });
+        this.new_line();
+        this.key_triggered_button("Shoot", ["Shift"], () => {
+            // Create a new projectile
+            let projectile = {
+                position: this.player_position2.plus(vec3(0, 0.5, 0)), // Adjust as needed to align with player
+                velocity: vec3(5, 0, 0) // Adjust the speed and direction
+            };
+            this.projectiles.push(projectile);
+        });
+
+        this.new_line();
+        this.new_line();
+
+        //Player 2 Controls
+        this.key_triggered_button("Move Left", ["a"], () => {
             this.player_velocity[0] = -5; // Move left
         }, undefined, () => {
             this.player_velocity[0] = 0; // Stop moving when key is released
         });
         this.new_line();
-        this.key_triggered_button("Move Right",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ["ArrowRight"], () => {
+        this.key_triggered_button("Move Right", ["d"], () => {
             this.player_velocity[0] = 5; // Move right
         }, undefined, () => {
             this.player_velocity[0] = 0; // Stop moving when key is released
         });
         this.new_line();
-        this.key_triggered_button("Jump", ["ArrowUp"], () => {
+        this.key_triggered_button("Jump", ["w"], () => {
             if (this.on_ground) { // Only jump if on the ground
                 this.on_ground = false;
                 this.player_velocity[1] = 10; // Jump velocity
@@ -108,6 +151,24 @@ export class PixelShooter extends Scene {
         let player_right = player_position[0] + player_size[0] / 2;
         let player_top = player_position[1] + player_size[1] / 2;
         let player_bottom = player_position[1] - player_size[1] / 2;
+
+        let platform_left = platform_position[0] - platform_size[0] / 2;
+        let platform_right = platform_position[0] + platform_size[0] / 2;
+        let platform_top = platform_position[1] + platform_size[1] / 2;
+        let platform_bottom = platform_position[1] - platform_size[1] / 2;
+
+        // Check if player and platform overlap
+        return player_left < platform_right && player_right > platform_left &&
+            player_bottom < platform_top && player_top > platform_bottom;
+    }
+
+    //Collision for player 2
+    check_collision2(player_position2, player_size, platform_position, platform_size) {
+        // AABB collision detection
+        let player_left = player_position2[0] - player_size[0] / 2;
+        let player_right = player_position2[0] + player_size[0] / 2;
+        let player_top = player_position2[1] + player_size[1] / 2;
+        let player_bottom = player_position2[1] - player_size[1] / 2;
 
         let platform_left = platform_position[0] - platform_size[0] / 2;
         let platform_right = platform_position[0] + platform_size[0] / 2;
@@ -191,16 +252,30 @@ export class PixelShooter extends Scene {
                 break;
             }
         }
+        
+        for (let platform of platforms) {
+            if (this.check_collision2(this.player_position2, player_size, platform.position, platform.size)) {
+                this.on_ground2 = true;
+                this.player_velocity2[1] = 0;
+                this.player_position2[1] = (platform.position[1] + platform.size[1] / 2 + player_size[1] / 2); // Adjust player position to be on top of the platform
+                break;
+            }
+        }
 
         if (!this.on_ground) {
             this.player_velocity[1] -= 9.8 * dt; // Continue applying gravity
         }
+        if (!this.on_ground2) {
+            this.player_velocity2[1] -= 9.8 * dt; // Continue applying gravity
+        }
 
         // Update player position
         this.player_position = this.player_position.plus(this.player_velocity.times(dt));
+        this.player_position2 = this.player_position2.plus(this.player_velocity2.times(dt));
 
         // Drawing Player
         let player_transform = Mat4.translation(...this.player_position);
+        let player_transform2 = Mat4.translation(...this.player_position2);
 
         // Ground Platform
         let ground_platform_transform = Mat4.identity()
@@ -226,6 +301,8 @@ export class PixelShooter extends Scene {
 
         // Draw All Shapes
         this.shapes.player.draw(context, program_state, player_transform, this.materials.player_material);
+        
+        this.shapes.player2.draw(context, program_state, player_transform2, this.materials.player_material2);
 
         this.shapes.platform.draw(context, program_state, platform_transform1, this.materials.platform_material);
 
