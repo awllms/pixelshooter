@@ -230,38 +230,6 @@ export class PixelShooter extends Scene {
         this.on_ground = false;
         this.on_ground2 = false;
 
-        // Projectiles
-        // Update and draw projectiles
-        for (let i = 0; i < this.projectiles.length; i++) {
-            // Update position based on velocity
-            let projectile = this.projectiles[i];
-            projectile.position = projectile.position.plus(projectile.velocity.times(dt));
-
-            // Check for player 1 collision
-            if (this.check_collision(projectile.position, this.projectile_size, this.player_position, this.player_size, this.player_velocity)) {
-                this.player_lives -= 1;
-                this.projectiles.splice(i, 1);
-                i--;
-            }
-
-            // Check for player 2 collision
-            if (this.check_collision(projectile.position, this.projectile_size, this.player_position2, this.player_size, this.player_velocity2)) {
-                this.player2_lives -= 1;
-                console.log("test");
-                this.projectiles.splice(i, 1);
-                i--;
-            }
-
-            // Draw the projectile
-            let projectile_transform = Mat4.translation(...projectile.position)
-                .times(Mat4.scale(0.2, 0.2, 0.2)); // Scale down the size
-            this.shapes.projectile.draw(context, program_state, projectile_transform, this.materials.projectile_material);
-        }
-
-        if (this.projectiles.length > 50) {
-            this.projectiles = this.projectiles.slice(9);
-        }
-
         // Collision Logic
         let player_size = vec(1, 1); // Width and height of the player
         let platforms = [
@@ -286,6 +254,47 @@ export class PixelShooter extends Scene {
                 size: vec(10, 2),
             },
         ]
+
+        // Projectiles
+        // Update and draw projectiles
+        for (let i = 0; i < this.projectiles.length; i++) {
+            // Update position based on velocity
+            let projectile = this.projectiles[i];
+            projectile.position = projectile.position.plus(projectile.velocity.times(dt));
+
+            // Check for player 1 collision
+            if (this.check_collision(projectile.position, this.projectile_size, this.player_position, this.player_size, this.player_velocity)) {
+                this.player_lives -= 1;
+                this.projectiles.splice(i, 1);
+                i--;
+            }
+
+            // Check for player 2 collision
+            if (this.check_collision(projectile.position, this.projectile_size, this.player_position2, this.player_size, this.player_velocity2)) {
+                this.player2_lives -= 1;
+                this.projectiles.splice(i, 1);
+                i--;
+            }
+
+            // Check if projectile collides with platform
+            for (let platform of platforms) {
+                if (this.check_collision(projectile.position, this.projectile_size, platform.position, platform.size, projectile.velocity)) {
+                    this.projectiles.splice(i, 1);
+                    i--;
+                    break;
+                }
+            }
+
+            // Draw the projectile
+            let projectile_transform = Mat4.translation(...projectile.position)
+                .times(Mat4.scale(0.2, 0.2, 0.2)); // Scale down the size
+            this.shapes.projectile.draw(context, program_state, projectile_transform, this.materials.projectile_material);
+        }
+
+        if (this.projectiles.length > 50) {
+            this.projectiles = this.projectiles.slice(9);
+        }
+
 
         for (let platform of platforms) {
             if (this.check_collision(this.player_position, player_size, platform.position, platform.size, this.player_velocity)) {
