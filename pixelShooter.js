@@ -229,7 +229,7 @@ export class PixelShooter extends Scene {
 
         this.on_ground = false;
         this.on_ground2 = false;
-        
+
         // Projectiles
         // Update and draw projectiles
         for (let i = 0; i < this.projectiles.length; i++) {

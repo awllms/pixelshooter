@@ -6,7 +6,6 @@ const gameOverScreen = document.getElementById('game-over-screen');
 const startButton = document.getElementById('start-button');
 const playAgainButton = document.getElementById('play-again-button');
 const winnerMessage = document.getElementById('winner-message');
-let newGame = false;
 
 // Start button event listener
 startButton.addEventListener('click', function() {
@@ -14,7 +13,6 @@ startButton.addEventListener('click', function() {
     gameScreen.style.display = 'block';  // Show game screen
     scoreBoard.style.position = 'absolute';
     scoreBoard.style.display = 'flex';
-    // startGame(); // Function to initialize and start the game
 });
 
 // Play again button event listener
@@ -23,9 +21,6 @@ playAgainButton.addEventListener('click', function() {
     gameScreen.style.display = 'block';     // Show game screen
     scoreBoard.style.position = 'absolute';
     scoreBoard.style.display = 'flex';
-
-    // newGame = true;
-    // startGame(); // Function to restart the game
 });
 
 // Function to show the game over screen
@@ -35,18 +30,6 @@ function showGameOver(winner) {
     scoreBoard.style.display = 'none';
     scoreBoard.style.position = 'relative';
     winnerMessage.textContent = winner + ' Wins!'; // Display winner message
-}
-
-// Function to start or restart the game
-export function startGame() {
-    // Reset game state, initialize players, etc.
-
-    if (newGame) {
-        newGame = false;
-        return true;
-    }
-
-    return false;
 }
 
 // Example of ending the game
