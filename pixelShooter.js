@@ -210,8 +210,8 @@ export class PixelShooter extends Scene {
     }
 
     update_ui_lives() {
-        document.getElementById('player1-lives').textContent = this.player_lives;
-        document.getElementById('player2-lives').textContent = this.player2_lives;
+        document.getElementById('player1-health').textContent = this.player_lives;
+        document.getElementById('player2-health').textContent = this.player2_lives;
     }
 
     display(context, program_state) {
