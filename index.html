@@ -6,12 +6,63 @@
 <head>
     <meta charset="UTF-8"/>
     <link href="assets/fav.ico" rel="icon">
-    <title>Tiny Graphics</title>
+    <title>Pixel Shooter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script type="module" src="script.js"></script>
 </head>
-<body style="background: White">
+<body>
 <!-- Begin typing your web page here. -->
 <!-- The following code embeds a WebGL canvas panel, loads certain scene(s), and displays panel(s) of their controls.-->
-<div class="canvas-widget" id="main-canvas"></div>
+<!-- Start Screen -->
+    <div id="start-screen" class="screen">
+        <h1>Pixel Shooter</h1>
+        <button id="start-button">Start Game</button>
+    </div>
+
+    <!-- Game Screen (initially hidden) -->
+    <div id="game-screen" class="game-screen">
+        <!-- Canvas and game UI elements -->
+        <div id="score">
+            <div class="score-items">
+<!--                <h5>Score</h5>-->
+                <div class="player-scores">
+                    <div id="player1-ui"><h4>Player 1:</h4> <span id="player1-lives">3</span></div>
+                    <div id="player2-ui"><h4>Player 2:</h4> <span id="player2-lives">3</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="canvas-widget" id="main-canvas"></div>
+
+        <div class="controls">
+            <div class="controlInner">
+                <h3>Controls</h3>
+                <div class="playerControlContainer">
+                    <div class="playerControls">
+                        <h4>Player 1</h4>
+                        <h5>Move: w, a, s, d</h5>
+                        <h5>Shoot: t</h5>
+                    </div>
+                    <div class="playerControls">
+                        <h4>Player 2</h4>
+                        <h5>Move: up, left, down, right</h5>
+                        <h5>Shoot: shift</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Over Screen (initially hidden) -->
+    <div id="game-over-screen" class="screen" style="display: none;">
+        <h1 id="winner-message"></h1>
+        <button id="play-again-button">Play Again</button>
+    </div>
+
 <script type=module>
     // ********************* THE ENTRY POINT OF YOUR WHOLE PROGRAM STARTS HERE *********************
     // Indicate which element on the page you want the Canvas_Widget to replace with a 3D WebGL area:
@@ -22,6 +73,7 @@
     // This line creates your scene.
     new Canvas_Widget(element_to_replace, scenes);
 </script>
+
 
 </body>
 </html>
