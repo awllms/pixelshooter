@@ -55,6 +55,75 @@ const Square = defs.Square =
         }
     }
 
+const Bar = defs.Bar =
+    class Bar extends Shape {
+        constructor() {
+            super("position", "normal", "texture_coord");
+            // Specify the 4 square corner locations, and match those up with normal vectors:
+            this.arrays.position = Vector3.cast([-1, -.1, 0], [1, -.1, 0], [-1, .1, 0], [1, .1, 0]);
+            this.arrays.normal = Vector3.cast([0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1]);
+            // Arrange the vertices into a square shape in texture space too:
+            this.arrays.texture_coord = Vector.cast([0, 0], [1, 0], [0, 1], [1, 1]);
+            // Use two triangles this time, indexing into four distinct vertices:
+            this.indices.push(0, 1, 2, 1, 3, 2);
+        }
+    }
+
+const Bar_full = defs.Bar_full =
+    class Bar_full extends Shape {
+        constructor() {
+            super("position", "normal", "texture_coord");
+            // Specify the 4 square corner locations, and match those up with normal vectors:
+            this.arrays.position = Vector3.cast([-1, -.1, 0], [1, -.1, 0], [-1, .1, 0], [1, .1, 0]);
+            this.arrays.normal = Vector3.cast([0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1]);
+            // Arrange the vertices into a square shape in texture space too:
+            this.arrays.texture_coord = Vector.cast([0, 0], [1, 0], [0, 1], [1, 1]);
+            // Use two triangles this time, indexing into four distinct vertices:
+            this.indices.push(0, 1, 2, 1, 3, 2);
+        }
+    }
+    
+    const Bar_75 = defs.Bar_75 =
+    class Bar_75 extends Shape {
+        constructor() {
+            super("position", "normal", "texture_coord");
+            // Specify the 4 square corner locations, and match those up with normal vectors:
+            this.arrays.position = Vector3.cast([-1, -.1, 0], [.5, -.1, 0], [-1, .1, 0], [.5, .1, 0]);
+            this.arrays.normal = Vector3.cast([0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1]);
+            // Arrange the vertices into a square shape in texture space too:
+            this.arrays.texture_coord = Vector.cast([0, 0], [1, 0], [0, 1], [1, 1]);
+            // Use two triangles this time, indexing into four distinct vertices:
+            this.indices.push(0, 1, 2, 1, 3, 2);
+        }
+    }
+
+    const Bar_half = defs.Bar_half =
+    class Bar_half extends Shape {
+        constructor() {
+            super("position", "normal", "texture_coord");
+            // Specify the 4 square corner locations, and match those up with normal vectors:
+            this.arrays.position = Vector3.cast([-1, -.1, 0], [0, -.1, 0], [-1, .1, 0], [0, .1, 0]);
+            this.arrays.normal = Vector3.cast([0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1]);
+            // Arrange the vertices into a square shape in texture space too:
+            this.arrays.texture_coord = Vector.cast([0, 0], [1, 0], [0, 1], [1, 1]);
+            // Use two triangles this time, indexing into four distinct vertices:
+            this.indices.push(0, 1, 2, 1, 3, 2);
+        }
+    }
+    
+const Bar_25 = defs.Bar_25 =
+        class Bar_25 extends Shape {
+            constructor() {
+                super("position", "normal", "texture_coord");
+                // Specify the 4 square corner locations, and match those up with normal vectors:
+                this.arrays.position = Vector3.cast([-.5, -.1, 0], [0, -.1, 0], [-.5, .1, 0], [0, .1, 0]);
+                this.arrays.normal = Vector3.cast([0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1]);
+                // Arrange the vertices into a square shape in texture space too:
+                this.arrays.texture_coord = Vector.cast([0, 0], [1, 0], [0, 1], [1, 1]);
+                // Use two triangles this time, indexing into four distinct vertices:
+                this.indices.push(0, 1, 2, 1, 3, 2);
+            }
+        }
 
 const Tetrahedron = defs.Tetrahedron =
     class Tetrahedron extends Shape {
