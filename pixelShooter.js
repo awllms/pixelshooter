@@ -15,8 +15,13 @@ export class PixelShooter extends Scene {
         this.player_size = vec(1, 1);
 
         this.INITIAL_LIVES = 5
-        this.player_lives = 5;
-        this.player2_lives = 5;
+
+        this.player_score = 0;
+        this.player2_score = 0;
+
+        this.INITIAL_HEALTH = 100;
+        this.player_health = 100;
+        this.player_health2 = 100;
 
         this.projectile_size = vec(0.2, 0.2);
 
@@ -38,6 +43,12 @@ export class PixelShooter extends Scene {
         this.s_clicked = false;
         this.s_clicked2 = false;
 
+        this.bar_position = vec3(-18, 0, 0);
+        this.bar_velocity = vec3(0, 0, 0);
+
+        this.bar_position2 = vec3(18, 0, 0);
+        this.bar_velocity2 = vec3(0, 0, 0);
+
         // At the beginning of our program, load one of each of these shape definitions onto the GPU.
         this.shapes = {
             torus: new defs.Torus(15, 15),
@@ -55,6 +66,18 @@ export class PixelShooter extends Scene {
             player2: new defs.Square(),
             platform: new defs.Square(),
             projectile: new defs.Square(),
+
+            bar: new defs.Bar(),
+            bar_full: new defs.Bar_full(),
+            bar_75: new defs.Bar_75(),
+            bar_half: new defs.Bar_half(),
+            bar_25: new defs.Bar_25(),
+
+            bar2: new defs.Bar(),
+            bar2_full: new defs.Bar_full(),
+            bar2_75: new defs.Bar_75(),
+            bar2_half: new defs.Bar_half(),
+            bar2_25: new defs.Bar_25(),
         };
 
         // *** Materials
@@ -101,6 +124,10 @@ export class PixelShooter extends Scene {
                 { color: color(1, 1, 1, 1), ambient: 1, diffusivity: 0, specularity: 0 }),
             projectile_material: new Material(new defs.Phong_Shader(),
                 { color: color(1, 1, 1, 1), ambient: 1, diffusivity: 0, specularity: 0 }),
+            barBack_material: new Material(new defs.Phong_Shader(),
+                { color: color(255, 0, 0, .5), ambient: 1, diffusivity: 0, specularity: 0 }),
+            bar_material: new Material(new defs.Phong_Shader(),
+                { color: color(255, 0, 0, 1), ambient: 1, diffusivity: 0, specularity: 0 }),
         }
 
         this.initial_camera_location = Mat4.look_at(
@@ -115,21 +142,26 @@ export class PixelShooter extends Scene {
         //Player 2 Controls
         this.key_triggered_button("Move Left", ["ArrowLeft"], () => {
             this.player_velocity2[0] = -20;
+            this.bar_velocity2[0] = -20;
             this.direction2 = -40; // Move left
         }, undefined, () => {
             this.player_velocity2[0] = 0; // Stop moving when key is released
+            this.bar_velocity2[0] = 0;
         });
         this.new_line();
         this.key_triggered_button("Move Right", ["ArrowRight"], () => {
             this.player_velocity2[0] = 20; // Move right
+            this.bar_velocity2[0] = 20;
             this.direction2 = 40
         }, undefined, () => {
             this.player_velocity2[0] = 0; // Stop moving when key is released
+            this.bar_velocity2[0] = 0;
         });
         this.new_line();
 
         this.key_triggered_button("Move Down", ["ArrowDown"], () => {
             this.player_velocity2[1] = -35;
+            this.bar_velocity2[1] = -35;
         });
 
         this.new_line();
@@ -138,6 +170,7 @@ export class PixelShooter extends Scene {
             if (this.on_ground2) { // Only jump if on the ground
                 this.on_ground2 = false;
                 this.player_velocity2[1] = 35; // Jump velocity
+                this.bar_velocity2[1] = 35;
             }
         });
         this.new_line();
@@ -156,21 +189,26 @@ export class PixelShooter extends Scene {
         //Player 1 Controls
         this.key_triggered_button("Move Left", ["a"], () => {
             this.player_velocity[0] = -20; // Move left
+            this.bar_velocity[0] = -20;
             this.direction = -40;
         }, undefined, () => {
             this.player_velocity[0] = 0; // Stop moving when key is released
+            this.bar_velocity[0] = 0;
         });
         this.new_line();
         this.key_triggered_button("Move Right", ["d"], () => {
             this.player_velocity[0] = 20; // Move right
+            this.bar_velocity[0] = 20;
             this.direction = 40;
         }, undefined, () => {
             this.player_velocity[0] = 0; // Stop moving when key is released
+            this.bar_velocity[0] = 0;
         });
         this.new_line();
 
         this.key_triggered_button("Move Down", ["s"], () => {
             this.player_velocity[1] = -35;
+            this.bar_velocity[1] = -35;
         });
 
         this.new_line();
@@ -179,6 +217,7 @@ export class PixelShooter extends Scene {
             if (this.on_ground) { // Only jump if on the ground
                 this.on_ground = false;
                 this.player_velocity[1] = 35; // Jump velocity
+                this.bar_velocity[1] = 35;
             }
         });
         this.new_line();
@@ -210,8 +249,8 @@ export class PixelShooter extends Scene {
     }
 
     update_ui_lives() {
-        document.getElementById('player1-health').textContent = this.player_lives;
-        document.getElementById('player2-health').textContent = this.player2_lives;
+        document.getElementById('player1-health').textContent = this.player_score;
+        document.getElementById('player2-health').textContent = this.player2_score;
     }
 
     display(context, program_state) {
@@ -224,15 +263,17 @@ export class PixelShooter extends Scene {
         // }
 
         // Check for winner and reset state
-        if (this.player_lives === 0 || this.player2_lives === 0) {
-            if (this.player_lives !== 0) {
+        if (this.player_health <= 0 || this.player_health2 <= 0) {
+            if (this.player_health !== 0) {
                 endGame("Player 1");
+                this.player_score += 1;
             } else {
                 endGame("Player 2");
+                this.player2_score += 1;
             }
 
-            this.player_lives = this.INITIAL_LIVES;
-            this.player2_lives = this.INITIAL_LIVES;
+            this.player_health = this.INITIAL_HEALTH;
+            this.player_health2 = this.INITIAL_HEALTH;
         }
 
         program_state.set_camera(this.initial_camera_location);
@@ -249,6 +290,54 @@ export class PixelShooter extends Scene {
 
         this.on_ground = false;
         this.on_ground2 = false;
+
+        // Health bar
+        let bar_transform = Mat4.translation(...this.bar_position);
+        let bar_transform2 = Mat4.translation(...this.bar_position2);
+
+        //Player 1 health bar update
+        if (this.player_health === 100){
+            this.shapes.bar_full.draw(context, program_state, bar_transform, this.materials.bar_material);
+        }
+        if (this.player_health === 75){
+            this.shapes.bar_75.draw(context, program_state, bar_transform, this.materials.bar_material);
+        }
+        if (this.player_health === 50) {
+            this.shapes.bar_half.draw(context, program_state, bar_transform, this.materials.bar_material);
+        }
+        if (this.player_health === 25) {
+            let bar_transform = Mat4.translation(...this.bar_position)
+                .times(Mat4.translation(-.5, 0, 0));
+            this.shapes.bar_25.draw(context, program_state, bar_transform, this.materials.bar_material);
+        }
+
+        //Player 2
+        if (this.player_health2 === 100){
+            this.shapes.bar2_full.draw(context, program_state, bar_transform2, this.materials.bar_material);
+        }
+        if (this.player_health2 === 75){
+            this.shapes.bar2_75.draw(context, program_state, bar_transform2, this.materials.bar_material);
+        }
+        if (this.player_health2 === 50) {
+            this.shapes.bar2_half.draw(context, program_state, bar_transform2, this.materials.bar_material);
+        }
+        if (this.player_health2 === 25) {
+            let bar_transform2 = Mat4.translation(...this.bar_position2)
+                .times(Mat4.translation(-.5, 0, 0));
+            this.shapes.bar2_25.draw(context, program_state, bar_transform2, this.materials.bar_material);
+        }
+
+        // Check for winner and reset state
+        if (this.player_health <= 0 || this.player_health2 <= 0) {
+            if (this.player_health !== 0) {
+                endGame("Player 1");
+            } else {
+                endGame("Player 2");
+            }
+
+            this.player_health = this.INITIAL_HEALTH;
+            this.player_health2 = this.INITIAL_HEALTH;
+        }
 
         // Collision Logic
         let player_size = vec(1, 1); // Width and height of the player
@@ -284,14 +373,14 @@ export class PixelShooter extends Scene {
 
             // Check for player 1 collision
             if (this.check_collision(projectile.position, this.projectile_size, this.player_position, this.player_size, this.player_velocity)) {
-                this.player_lives -= 1;
+                this.player_health -= 25;
                 this.projectiles.splice(i, 1);
                 i--;
             }
 
             // Check for player 2 collision
             if (this.check_collision(projectile.position, this.projectile_size, this.player_position2, this.player_size, this.player_velocity2)) {
-                this.player2_lives -= 1;
+                this.player_health2 -= 25;
                 this.projectiles.splice(i, 1);
                 i--;
             }
@@ -320,7 +409,9 @@ export class PixelShooter extends Scene {
             if (this.check_collision(this.player_position, player_size, platform.position, platform.size, this.player_velocity)) {
                 this.on_ground = true;
                 this.player_velocity[1] = 0;
+                this.bar_velocity[1] = 0;
                 this.player_position[1] = (platform.position[1] + platform.size[1] / 2 + player_size[1] / 2); // Adjust player position to be on top of the platform
+                this.bar_position[1] = (platform.position[1] + platform.size[1] / 2 + player_size[1] / 2) + 1.5;
                 break;
             }
         }
@@ -329,16 +420,20 @@ export class PixelShooter extends Scene {
             if (this.check_collision(this.player_position2, player_size, platform.position, platform.size, this.player_velocity2)) {
                 this.on_ground2 = true;
                 this.player_velocity2[1] = 0;
+                this.bar_velocity2[1] = 0;
                 this.player_position2[1] = (platform.position[1] + platform.size[1] / 2 + player_size[1] / 2); // Adjust player position to be on top of the platform
+                this.bar_position2[1] = (platform.position[1] + platform.size[1] / 2 + player_size[1] / 2) + 1.5;
                 break;
             }
         }
 
         if (!this.on_ground) {
             this.player_velocity[1] -= 45 * 1.5 * dt; // Continue applying gravity
+            this.bar_velocity[1] -= 45 * 1.5 * dt;
         }
         if (!this.on_ground2) {
             this.player_velocity2[1] -= 45 * 1.5 * dt; // Continue applying gravity
+            this.bar_velocity2[1] -= 45 * 1.5 * dt;
         }
 
         // Update player position
@@ -352,6 +447,19 @@ export class PixelShooter extends Scene {
         }
         else{
             this.player_velocity2[0] = 0;
+        }
+
+        // Update health bar position
+        if (this.bar_position[0] + this.bar_velocity[0] / 60 >= -21.5 && this.bar_position[0] + (this.bar_velocity[0] / 60) <= 21.5) {
+            this.bar_position = this.bar_position.plus(this.bar_velocity.times(dt));
+        } else {
+            this.bar_velocity[0] = 0;
+        }
+
+        if (this.bar_position2[0] + this.bar_velocity2[0] / 60 >= -21.5 && this.bar_position2[0] + (this.bar_velocity2[0] / 60) <= 21.5) {
+            this.bar_position2 = this.bar_position2.plus(this.bar_velocity2.times(dt));
+        } else {
+            this.bar_velocity2[0] = 0;
         }
 
         // Drawing Player
@@ -387,6 +495,10 @@ export class PixelShooter extends Scene {
         this.shapes.player.draw(context, program_state, player_transform, this.materials.player_material);
         
         this.shapes.player2.draw(context, program_state, player_transform2, this.materials.player_material2);
+
+        this.shapes.bar2.draw(context, program_state, bar_transform2, this.materials.barBack_material);
+
+        this.shapes.bar.draw(context, program_state, bar_transform, this.materials.barBack_material);
 
         this.shapes.platform.draw(context, program_state, platform_transform1, this.materials.platform_material);
 
