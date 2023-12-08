@@ -249,8 +249,8 @@ export class PixelShooter extends Scene {
     }
 
     update_ui_lives() {
-        document.getElementById('player1-health').textContent = this.player_score;
-        document.getElementById('player2-health').textContent = this.player2_score;
+        document.getElementById('player1-score').textContent = this.player_score;
+        document.getElementById('player2-score').textContent = this.player2_score;
     }
 
     display(context, program_state) {
