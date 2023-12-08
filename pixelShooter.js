@@ -32,6 +32,12 @@ export class PixelShooter extends Scene {
         this.direction = 40;
         this.direction2 = -40;
 
+        this.on_platform = false;
+        this.on_platform2 = false;
+
+        this.s_clicked = false;
+        this.s_clicked2 = false;
+
         // At the beginning of our program, load one of each of these shape definitions onto the GPU.
         this.shapes = {
             torus: new defs.Torus(15, 15),
@@ -106,7 +112,7 @@ export class PixelShooter extends Scene {
 
     make_control_panel() {
         // Draw the scene's buttons, setup their actions and keyboard shortcuts, and monitor live measurements.
-        //Player 1 Controls
+        //Player 2 Controls
         this.key_triggered_button("Move Left", ["ArrowLeft"], () => {
             this.player_velocity2[0] = -20;
             this.direction2 = -40; // Move left
@@ -121,6 +127,13 @@ export class PixelShooter extends Scene {
             this.player_velocity2[0] = 0; // Stop moving when key is released
         });
         this.new_line();
+
+        this.key_triggered_button("Move Down", ["ArrowDown"], () => {
+            this.player_velocity2[1] = -35;
+        });
+
+        this.new_line();
+
         this.key_triggered_button("Jump", ["ArrowUp"], () => {
             if (this.on_ground2) { // Only jump if on the ground
                 this.on_ground2 = false;
@@ -140,7 +153,7 @@ export class PixelShooter extends Scene {
         this.new_line();
         this.new_line();
 
-        //Player 2 Controls
+        //Player 1 Controls
         this.key_triggered_button("Move Left", ["a"], () => {
             this.player_velocity[0] = -20; // Move left
             this.direction = -40;
@@ -155,6 +168,13 @@ export class PixelShooter extends Scene {
             this.player_velocity[0] = 0; // Stop moving when key is released
         });
         this.new_line();
+
+        this.key_triggered_button("Move Down", ["s"], () => {
+            this.player_velocity[1] = -35;
+        });
+
+        this.new_line();
+
         this.key_triggered_button("Jump", ["w"], () => {
             if (this.on_ground) { // Only jump if on the ground
                 this.on_ground = false;

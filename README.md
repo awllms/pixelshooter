@@ -17,7 +17,7 @@ An advanced feature that will be implemented will be collision detection. There 
 destroyed. Also, we will be using Physics-based simulations throughout the game to model projectile and player speeds.
 
 ## Interactivity
-Each player will have their own set of controls. Player 1 will use the "w", "a", "s", and "d" keys to move their character and "t" to shoot. Player 2 will use the up, left, down, and right arrows to control their character's movements and "shift" to shoot. Each player will start with a fixed set of lives at the start of each game. If a player loses all of their lives, the game will end.
+Each player will have their own set of controls. Player 1 will use the "w", "a", "s", and "d" keys to move their character and "r" to shoot. Player 2 will use the up, left, down, and right arrows to control their character's movements and "shift" to shoot. Each player will start with a fixed set of lives at the start of each game. If a player loses all of their lives, the game will end.
 
 
 
