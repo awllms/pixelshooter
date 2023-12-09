@@ -9,12 +9,11 @@ export class PixelShooter extends Scene {
     constructor() {
         // constructor(): Scenes begin by populating initial values like the Shapes and Materials they'll need.
         super();
-        this.player_position = vec3(-18, -1, 0); // Initial position
-        this.player_position2 = vec3(18, -4.5, 0); // Initial position
+        this.check_document_state();
+        this.player_position = vec3(-18, -10, 0); // Initial position
+        this.player_position2 = vec3(18, -10, 0); // Initial position
 
         this.player_size = vec(1, 1);
-
-        this.INITIAL_LIVES = 5
 
         this.player_score = 0;
         this.player2_score = 0;
@@ -28,8 +27,8 @@ export class PixelShooter extends Scene {
         this.player_velocity = vec3(0, 0, 0); // Velocity
         this.player_velocity2 = vec3(0, 0, 0); // Velocity
 
-        this.on_ground = false;
-        this.on_ground2 = false;
+        this.on_ground = true;
+        this.on_ground2 = true;
 
         this.projectiles = []; // Array to hold active projectiles
         this.projectiles2 = []; // Array to hold active projectiles
@@ -152,7 +151,7 @@ export class PixelShooter extends Scene {
         this.key_triggered_button("Move Right", ["ArrowRight"], () => {
             this.player_velocity2[0] = 20; // Move right
             this.bar_velocity2[0] = 20;
-            this.direction2 = 40
+            this.direction2 = 40;
         }, undefined, () => {
             this.player_velocity2[0] = 0; // Stop moving when key is released
             this.bar_velocity2[0] = 0;
@@ -231,6 +230,7 @@ export class PixelShooter extends Scene {
         });
     }
 
+
     check_collision(player_position, player_size, platform_position, platform_size, player_velocity) {
         // AABB collision detection
         let player_left = player_position[0] - player_size[0] / 2;
@@ -251,6 +251,24 @@ export class PixelShooter extends Scene {
     update_ui_lives() {
         document.getElementById('player1-score').textContent = this.player_score;
         document.getElementById('player2-score').textContent = this.player2_score;
+    }
+
+    update_player_ground_state() {
+        const gameScreen = document.getElementById('game-screen');
+
+        if (window.getComputedStyle(gameScreen).display === "none") {
+            this.on_ground = true;
+            this.on_ground2 = true;
+        }
+    }
+
+    check_document_state() {
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') {
+                this.on_ground = true;
+                this.on_ground2 = true;
+            }
+        });
     }
 
     display(context, program_state) {
@@ -287,9 +305,6 @@ export class PixelShooter extends Scene {
         // The parameters of the Light are: position, color, size
         const light_position = vec4(0, -20, 20, 1);
         program_state.lights = [new Light(light_position, color(1, 1, 1, 1), 10000)];
-
-        this.on_ground = false;
-        this.on_ground2 = false;
 
         // Health bar
         let bar_transform = Mat4.translation(...this.bar_position);
@@ -404,6 +419,13 @@ export class PixelShooter extends Scene {
             this.projectiles = this.projectiles.slice(9);
         }
 
+        this.on_ground = false;
+        this.on_ground2 = false;
+
+        this.player_position[1] = Math.max(-10, this.player_position[1]);
+        this.player_position2[1] = Math.max(-10, this.player_position2[1]);
+
+        this.update_player_ground_state();
 
         for (let platform of platforms) {
             if (this.check_collision(this.player_position, player_size, platform.position, platform.size, this.player_velocity)) {
