@@ -1,26 +1,35 @@
 # Pixel Shooter
 
 ## Theme
-Project for UCLA CS174A.
+Final Project for UCLA CS174A.
 
-Our project is based on the popular game "Duck Game," released in 2014. The game is a local multiplayer shooter where players control ducks who can use various weapons to eliminate each other.
+Our project is a 2D platformer inspired by the dynamics of classic arcade-style shooters, designed to be both challenging and engaging.
 
-This proposal is for a new video game with similar mechanics to Duck Game. The game will be called "Pixel Shooter," and it will be a 2-player game. The game's goal will be to survive against the enemy trying to eliminate you as long as possible. Each player will have a certain amount of lives. The player who loses all of their lives first loses the game.
+Pixel Shooter is a 2-player game set in a world where players navigate around platforms, dodge obstacles, and face adversaries. The goal will be to survive against the enemy trying to eliminate you as long as possible. Each player will have a certain amount of health. The player who loses all of their health first loses the game. The game will be played from a 2D side perspective. Each player will control a character who can move around the screen, jump, and shoot. The player will have to use their weapon to eliminate the other player.
 
 ## Demo
 
-Coming soon
+<img alt="pixel shooter demo" src="assets/pixelshooter.gif" />
 
 ## Course Topics
 Implementing this game will require matrix transformations, lighting, and texture materials. Player movement will be a feature in this game. The movement of the players and projectiles will use matrix translations. As players move around, gravity will be applied to their character as they jump around the level, dodging projectiles. Additional transformations like scaling are utilized to create each unique platform.
-An advanced feature that will be implemented will be collision detection. There will be collision detection between projectiles and players, platforms and players, and projectiles and platforms. If a projectile intersects a player, they will lose a life; if a projectile intersects a platform, it will be
+An advanced feature that will be implemented will be collision detection. There will be collision detection between projectiles and players, platforms and players, and projectiles and platforms. If a projectile intersects a player, they will lose health; if a projectile intersects a platform, it will be
 destroyed. Also, we will be using Physics-based simulations throughout the game to model projectile and player speeds.
 
 ## Interactivity
-Each player will have their own set of controls. Player 1 will use the "w", "a", "s", and "d" keys to move their character and "r" to shoot. Player 2 will use the up, left, down, and right arrows to control their character's movements and "shift" to shoot. Each player will start with a fixed set of lives at the start of each game. If a player loses all of their lives, the game will end.
+At the start of the game. A player is met with an intro screen where they can click a button to start the game. The DOM elements are then updated to show the hidden game.
 
+Each player will have their own set of controls. Player 1 will use the "w", "a", "s", and "d" keys to move their character and "r" to shoot. Player 2 will use the up, left, down, and right arrows to control their character's movements and "shift" to attack. Each player will start with a fixed set of health at the start of each game. If a player loses all of their health, the game will end, and the winner will be announced with a game end screen.
+Other interactivity features include. The player's health and the player's score. As the player takes damage, their health is updated accordingly. If a player wins, the score will be updated using the javascript DOM to add a point to that player's respective score.
 
+## Advanced Topics
+**Collision Detection:** We've implemented collision detection in the game. Characters will not fall through those objects when they interact with platforms or projectiles. If a projectile hits a character, they will lose health.
+
+**Physics-based simulation:** Characters, health bars, and projectiles have a velocity, and the game implements gravity that affects the player and projectiles.
 
 ## Getting Started
+Live demo:
 
-Coming Soon
+```
+https://awllms.com/pixelshooter
+```
