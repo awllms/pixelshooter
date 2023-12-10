@@ -12,9 +12,9 @@ Pixel Shooter is a 2-player game set in a world where players navigate around pl
 <img alt="pixel shooter demo" src="assets/pixelshooter.gif" />
 
 ## Course Topics
-Implementing this game will require matrix transformations, lighting, and texture materials. Player movement will be a feature in this game. The movement of the players and projectiles will use matrix translations. As players move around, gravity will be applied to their character as they jump around the level, dodging projectiles. Additional transformations like scaling are utilized to create each unique platform.
-An advanced feature that will be implemented will be collision detection. There will be collision detection between projectiles and players, platforms and players, and projectiles and platforms. If a projectile intersects a player, they will lose health; if a projectile intersects a platform, it will be
-destroyed. Also, we will be using Physics-based simulations throughout the game to model projectile and player speeds.
+The implementation of the game required matrix transformations, lighting, and texture materials. Player movement is a feature in this game. The movement of the players and projectiles all use matrix translations. As players move around, gravity is applied to their character as they jump around the level, dodging projectiles. Additional transformations like scaling are utilized to create each unique platform. Additionally, we use textures and lighting to give the game a vibrant 2D look.
+
+An advanced feature that was implemented is collision detection. There is collision detection between projectiles and players, platforms and players, and projectiles and platforms. If a projectile intersects a player, they will lose health. Also, we will be using Physics-based simulations throughout the game to model projectile and player speeds.
 
 ## Interactivity
 At the start of the game. A player is met with an intro screen where they can click a button to start the game. The DOM elements are then updated to show the hidden game.
