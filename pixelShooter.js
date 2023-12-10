@@ -342,18 +342,6 @@ export class PixelShooter extends Scene {
             this.shapes.bar2_25.draw(context, program_state, bar_transform2, this.materials.bar_material);
         }
 
-        // Check for winner and reset state
-        if (this.player_health <= 0 || this.player_health2 <= 0) {
-            if (this.player_health !== 0) {
-                endGame("Player 1");
-            } else {
-                endGame("Player 2");
-            }
-
-            this.player_health = this.INITIAL_HEALTH;
-            this.player_health2 = this.INITIAL_HEALTH;
-        }
-
         // Collision Logic
         let player_size = vec(1, 1); // Width and height of the player
         let platforms = [
